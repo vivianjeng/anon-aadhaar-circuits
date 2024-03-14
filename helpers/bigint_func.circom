@@ -54,7 +54,7 @@ function getProperRepresentation(m, n, k, in) {
     }
     assert(n <= m);
     for (var i = 0; i+1 < k + ceilMN; i++) {
-        assert((1 << m) >= out[i] && out[i] >= -(1 << m));
+        assert((1 << m) >= out[i] && out[i] >= (0-(1 << m)));
         var shifted_val = out[i] + (1 << m);
         assert(0 <= shifted_val && shifted_val <= (1 << (m+1)));
         out[i] = shifted_val & ((1 << n) - 1);
@@ -86,9 +86,9 @@ function poly_interp(len, v) {
     full_poly[0] = 1;
     for (var i = 0; i < len; i++) {
         full_poly[i+1] = 0;
-        for (var j = i; j >= 0; j--) {
-            full_poly[j+1] += full_poly[j];
-            full_poly[j] *= -i;
+        for (var j = 0; j < (i+1); j++) {
+            full_poly[i+1-j] += full_poly[i-j];
+            full_poly[i-j] *= (0-i);
         }
     }
 
@@ -104,9 +104,9 @@ function poly_interp(len, v) {
         cur_v = v[i] / cur_v;
 
         var cur_rem = full_poly[len];
-        for (var j = len-1; j >= 0; j--) {
-            out[j] += cur_v * cur_rem;
-            cur_rem = full_poly[j] + i * cur_rem;
+        for (var j = 0; j < len; j++) {
+            out[len-j-1] += cur_v * cur_rem;
+            cur_rem = full_poly[len-j-1] + i * cur_rem;
         }
         assert(cur_rem == 0);
     }
@@ -195,15 +195,15 @@ function long_div(n, k, m, a, b){
 
     var mult[200];
     var dividend[200];
-    for (var i = m; i >= 0; i--) {
+    for (var i = 0; i < (m+1); i++) {
         if (i == m) {
             dividend[k] = 0;
-            for (var j = k - 1; j >= 0; j--) {
-                dividend[j] = remainder[j + m];
+            for (var j = 0; j < k; j--) {
+                dividend[k-j] = remainder[k-j - m];
             }
         } else {
-            for (var j = k; j >= 0; j--) {
-                dividend[j] = remainder[j + i];
+            for (var j = 0; j < (k+1); j++) {
+                dividend[k-j] = remainder[k-j-i];
             }
         }
 

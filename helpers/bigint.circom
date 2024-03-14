@@ -317,12 +317,12 @@ template BigLessThan(n, k){
     component ors[k - 1];
     component ands[k - 1];
     component eq_ands[k - 1];
-    for (var i = k - 2; i >= 0; i--) {
+    for (var i = 0; i < k-1; i++) {
         ands[i] = AND();
         eq_ands[i] = AND();
         ors[i] = OR();
 
-        if (i == k - 2) {
+        if (i == 0) {
            ands[i].a <== eq[k - 1].out;
            ands[i].b <== lt[k - 2].out;
            eq_ands[i].a <== eq[k - 1].out;
@@ -330,11 +330,11 @@ template BigLessThan(n, k){
            ors[i].a <== lt[k - 1].out;
            ors[i].b <== ands[i].out;
         } else {
-           ands[i].a <== eq_ands[i + 1].out;
-           ands[i].b <== lt[i].out;
-           eq_ands[i].a <== eq_ands[i + 1].out;
-           eq_ands[i].b <== eq[i].out;
-           ors[i].a <== ors[i + 1].out;
+           ands[i].a <== eq_ands[i - 1].out;
+           ands[i].b <== lt[k-2-i].out;
+           eq_ands[i].a <== eq_ands[i - 1].out;
+           eq_ands[i].b <== eq[k-2-i].out;
+           ors[i].a <== ors[i - 1].out;
            ors[i].b <== ands[i].out;
         }
      }
